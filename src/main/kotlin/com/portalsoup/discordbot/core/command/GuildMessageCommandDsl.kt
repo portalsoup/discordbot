@@ -48,21 +48,22 @@ class GuildMessagePreconditionListBuilder<E : GenericGuildMessageEvent> : Precon
 
 @CommandDsl
 open class GuildMessageJobBuilder<E : GenericGuildMessageEvent> : JobBuilder<E>() {
-    fun send(lambda: (E) -> String) {
+    fun reply(lambda: () -> String) {
         run = { event ->
-            event.channel.sendMessage(lambda(event)).queue()
+            event.channel.sendMessage(lambda()).queue()
         }
     }
 
-    fun sendDM(lambda: (E) -> String) {
+    fun replyDM(lambda: () -> String) {
         run = { event ->
             event.channel
                 .retrieveMessageById(event.messageId)
                 .complete()
                 .author
                 .openPrivateChannel()
-                .complete()
-                .sendMessage(lambda(event))
+                .queue() {
+                    it.sendMessage(lambda())
+                }
         }
     }
 
