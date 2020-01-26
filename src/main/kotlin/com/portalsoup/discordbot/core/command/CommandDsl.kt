@@ -17,12 +17,12 @@ data class Command<E : Event>(
 )
 
 @CommandDsl
-class CommandBuilder<E : Event> {
-    private var job: Job<E> =
+open class CommandBuilder<E : Event> : AbstractCommandBuilder<E>() {
+    internal var job: Job<E> =
         Job { Unit }
-    private var preconditions = mutableListOf<(E) -> Boolean>()
-    private var description = ""
-    private var name = ""
+    internal var preconditions = mutableListOf<(E) -> Boolean>()
+    internal var description = ""
+    internal var name = ""
 
     fun job(lambda: JobBuilder<E>.() -> Unit) {
         job = JobBuilder<E>().apply(lambda).build()
@@ -34,24 +34,24 @@ class CommandBuilder<E : Event> {
         )
     }
 
-    fun description(lambda: () -> String) {
+    override fun description(lambda: () -> String) {
         description = lambda()
     }
 
-    fun name(lambda: () -> String) {
+    override fun name(lambda: () -> String) {
         name = lambda()
     }
 
-    fun build() =
-        Command(job, preconditions, description, name)
+    override fun build(): Command<E> =
+        Command(name = name, description = description, job = job, preconditions = preconditions)
 }
 
 /*
  * Precondition
  */
 @CommandDsl
-class PreconditionListBuilder<E : Event> {
-    private val preconditions = mutableListOf<(E) -> Boolean>()
+open class PreconditionListBuilder<E : Event> {
+    internal val preconditions = mutableListOf<(E) -> Boolean>()
 
     fun predicate(lambda: (E) -> Boolean) {
         preconditions.add(lambda)
@@ -66,8 +66,8 @@ class PreconditionListBuilder<E : Event> {
 data class Job<in E : Event>(val run: (E) -> Unit)
 
 @CommandDsl
-class JobBuilder<E : Event> {
-    private var run: (E) -> Unit = { _ -> Unit }
+open class JobBuilder<E : Event> {
+    internal var run: (E) -> Unit = { _ -> Unit }
 
     fun run(lambda: (E) -> Unit) {
         this.run = lambda
