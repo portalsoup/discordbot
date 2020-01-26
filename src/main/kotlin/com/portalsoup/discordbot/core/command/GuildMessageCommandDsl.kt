@@ -62,7 +62,8 @@ open class GuildMessageJobBuilder<E : GenericGuildMessageEvent> : JobBuilder<E>(
                 .author
                 .openPrivateChannel()
                 .queue() {
-                    it.sendMessage(lambda())
+                    println("private channel opened")
+                    it.sendMessage(lambda()).queue()
                 }
         }
     }
