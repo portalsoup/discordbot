@@ -7,8 +7,7 @@ import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent
 @CommandDsl
 class GuildMessageCommandBuilder<E : GenericGuildMessageEvent> : AbstractCommandBuilder<E>() {
 
-    internal var job: Job<E> =
-        Job { Unit }
+    internal var job: Job<E> = Job(listOf())
     internal var preconditions = mutableListOf<(E) -> Boolean>()
     internal var description = ""
     internal var name = ""
@@ -49,20 +48,19 @@ class GuildMessagePreconditionListBuilder<E : GenericGuildMessageEvent> : Precon
 @CommandDsl
 open class GuildMessageJobBuilder<E : GenericGuildMessageEvent> : JobBuilder<E>() {
     fun reply(lambda: () -> String) {
-        run = { event ->
+        addRunner { event ->
             event.channel.sendMessage(lambda()).queue()
         }
     }
 
     fun replyDM(lambda: () -> String) {
-        run = { event ->
+        addRunner { event ->
             event.channel
                 .retrieveMessageById(event.messageId)
                 .complete()
                 .author
                 .openPrivateChannel()
                 .queue() {
-                    println("private channel opened")
                     it.sendMessage(lambda()).queue()
                 }
         }

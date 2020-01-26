@@ -49,7 +49,8 @@ class EventListener(private val bot: DiscordBot) : ListenerAdapter() {
                 .map { predicate -> predicate(event) }
                 .fold(true) {total, next -> total && next}
         }.map { it.command.job as Job<GuildMessageReceivedEvent> }
-            .forEach { it.run(event) }
+            .flatMap { it.run }
+            .forEach { it(event) }
     }
 
     override fun onPrivateMessageReceived(event: PrivateMessageReceivedEvent) {
@@ -68,7 +69,8 @@ class EventListener(private val bot: DiscordBot) : ListenerAdapter() {
                 .map { predicate -> predicate(event) }
                 .fold(true) {total, next -> total && next}
         }.map { it.command.job as Job<PrivateMessageReceivedEvent> }
-            .forEach { it.run(event) }
+            .flatMap { it.run }
+            .forEach { it(event) }
     }
 
     override fun onGuildJoin(event: GuildJoinEvent) {
@@ -87,7 +89,8 @@ class EventListener(private val bot: DiscordBot) : ListenerAdapter() {
                 .map { predicate -> predicate(event) }
                 .fold(true) {total, next -> total && next}
         }.map { it.command.job as Job<GuildJoinEvent> }
-            .forEach { it.run(event) }
+            .flatMap { it.run }
+            .forEach { it(event) }
     }
 
     fun incrementHistoryCounter() {

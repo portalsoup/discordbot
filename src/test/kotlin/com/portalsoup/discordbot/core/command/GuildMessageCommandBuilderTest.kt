@@ -25,7 +25,7 @@ internal class GuildMessageCommandBuilderTest {
             }
 
             job {
-                run {
+                addRunner {
 
                 }
             }

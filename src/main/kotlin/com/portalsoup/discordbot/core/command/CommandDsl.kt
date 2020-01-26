@@ -18,8 +18,7 @@ data class Command<E : Event>(
 
 @CommandDsl
 open class CommandBuilder<E : Event> : AbstractCommandBuilder<E>() {
-    internal var job: Job<E> =
-        Job { Unit }
+    internal var job: Job<E> = Job(listOf())
     internal var preconditions = mutableListOf<(E) -> Boolean>()
     internal var description = ""
     internal var name = ""
@@ -63,14 +62,14 @@ open class PreconditionListBuilder<E : Event> {
 /*
  * Job
  */
-data class Job<in E : Event>(val run: (E) -> Unit)
+data class Job<in E : Event>(val run: List<(E) -> Unit>)
 
 @CommandDsl
 open class JobBuilder<E : Event> {
-    internal var run: (E) -> Unit = { _ -> Unit }
+    internal var run: MutableList<(E) -> Unit> = mutableListOf()
 
-    fun run(lambda: (E) -> Unit) {
-        this.run = lambda
+    fun addRunner(lambda: (E) -> Unit) {
+        this.run.add(lambda)
     }
 
     fun build() = Job(run)
