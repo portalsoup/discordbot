@@ -1,5 +1,9 @@
-package com.portalsoup.discordbot.core.command
+package com.portalsoup.discordbot.core.command.type
 
+import com.portalsoup.discordbot.core.command.AbstractCommandBuilder
+import com.portalsoup.discordbot.core.command.CommandDsl
+import com.portalsoup.discordbot.core.command.JobBuilder
+import com.portalsoup.discordbot.core.command.PreconditionListBuilder
 import com.portalsoup.discordbot.core.command.preconditions.GuildMessageAuthorPreconditions
 import com.portalsoup.discordbot.core.command.preconditions.GuildMessagePreconditions
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent
@@ -52,4 +56,5 @@ open class GuildMessageJobBuilder<E : GenericGuildMessageEvent> : JobBuilder<E>(
 
 }
 
-fun <E : GenericGuildMessageEvent> sendMessage(lambda: GuildMessageCommandBuilder<E>.() -> Unit) = GuildMessageCommandBuilder<E>().apply(lambda).build()
+fun <E : GenericGuildMessageEvent> sendMessage(lambda: GuildMessageCommandBuilder<E>.() -> Unit) =
+    GuildMessageCommandBuilder<E>().apply(lambda).build()
