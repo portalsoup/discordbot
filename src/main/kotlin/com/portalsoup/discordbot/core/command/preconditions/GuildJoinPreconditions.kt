@@ -70,10 +70,9 @@ class GuildJoinNamePreconditions<E : GuildMemberJoinEvent>(val preconditions: Mu
         preconditions.add { event: GuildMemberJoinEvent ->
             try {
                 event
-                    .channel
-                    .retrieveMessageById(event.messageId)
-                    .complete()
-                    .contentRaw.trim()
+                    .member
+                    .effectiveName
+                    .trim()
                     .toLowerCase()
                     .equals(message().toLowerCase())
             } catch (exception: Throwable) {
