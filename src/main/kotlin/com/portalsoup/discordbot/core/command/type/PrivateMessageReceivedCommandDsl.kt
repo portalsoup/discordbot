@@ -8,6 +8,12 @@ import com.portalsoup.discordbot.core.command.preconditions.PrivateMessageAuthor
 import com.portalsoup.discordbot.core.command.preconditions.PrivateMessagePreconditions
 import net.dv8tion.jda.api.events.message.priv.GenericPrivateMessageEvent
 
+/**
+ * Top level entrypoint
+ */
+fun <E : GenericPrivateMessageEvent> sendDM(lambda: PrivateMessageReceivedCommandBuilder<E>.() -> Unit) =
+    PrivateMessageReceivedCommandBuilder<E>().apply(lambda).build()
+
 @CommandDsl
 class PrivateMessageReceivedCommandBuilder<E : GenericPrivateMessageEvent> : AbstractCommandBuilder<E>() {
 
@@ -22,6 +28,15 @@ class PrivateMessageReceivedCommandBuilder<E : GenericPrivateMessageEvent> : Abs
     }
 }
 
+@CommandDsl
+open class PrivateMessageJobBuilder<E : GenericPrivateMessageEvent> : JobBuilder<E>() {
+    fun reply(lambda: () -> String) {
+        addRunner { event ->
+            event.channel.sendMessage(lambda()).queue()
+        }
+    }
+}
+
 class PrivateMessagePreconditionListBuilder<E : GenericPrivateMessageEvent> : PreconditionListBuilder<E>() {
     fun message(lambda: PrivateMessagePreconditions<E>.() -> Unit) =
         PrivateMessagePreconditions(preconditions).apply(lambda)
@@ -29,22 +44,3 @@ class PrivateMessagePreconditionListBuilder<E : GenericPrivateMessageEvent> : Pr
     fun sender(lambda: PrivateMessageAuthorPreconditions<E>.() -> Unit) =
         PrivateMessageAuthorPreconditions(preconditions).apply(lambda)
 }
-
-@CommandDsl
-open class PrivateMessageJobBuilder<E : GenericPrivateMessageEvent> : JobBuilder<E>() {
-    fun reply(lambda: () -> String) {
-        addRunner { event ->
-            event.channel
-                .retrieveMessageById(event.messageId)
-                .complete()
-                .author
-                .openPrivateChannel()
-                .queue() {
-                    it.sendMessage(lambda()).queue()
-                }
-        }
-    }
-}
-
-fun <E : GenericPrivateMessageEvent> sendDM(lambda: PrivateMessageReceivedCommandBuilder<E>.() -> Unit) =
-    PrivateMessageReceivedCommandBuilder<E>().apply(lambda).build()
