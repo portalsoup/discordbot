@@ -39,5 +39,5 @@ open class PrivateMessageJobBuilder<E : GenericPrivateMessageEvent> : JobBuilder
     }
 }
 
-fun <E : GenericPrivateMessageEvent> sendMessage(lambda: PrivateMessageReceivedCommandBuilder<E>.() -> Unit) =
+fun <E : GenericPrivateMessageEvent> sendDM(lambda: PrivateMessageReceivedCommandBuilder<E>.() -> Unit) =
     PrivateMessageReceivedCommandBuilder<E>().apply(lambda).build()
