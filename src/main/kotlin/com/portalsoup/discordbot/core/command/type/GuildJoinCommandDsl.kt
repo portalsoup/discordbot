@@ -1,9 +1,7 @@
 package com.portalsoup.discordbot.core.command.type
 
 import com.portalsoup.discordbot.core.command.AbstractCommandBuilder
-import com.portalsoup.discordbot.core.command.Job
 import com.portalsoup.discordbot.core.command.JobBuilder
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import java.lang.RuntimeException
 

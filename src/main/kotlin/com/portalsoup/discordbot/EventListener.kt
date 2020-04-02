@@ -5,7 +5,7 @@ import com.portalsoup.discordbot.core.command.GuildMessageReceivedCommand
 import com.portalsoup.discordbot.core.command.Job
 import com.portalsoup.discordbot.core.command.PrivateMessageReceivedCommand
 import net.dv8tion.jda.api.Permission
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -73,7 +73,7 @@ class EventListener(private val bot: DiscordBot) : ListenerAdapter() {
             .forEach { it(event) }
     }
 
-    override fun onGuildJoin(event: GuildJoinEvent) {
+    override fun onGuildJoin(event: GuildMemberJoinEvent) {
         // dsl commands
         val reflections = Reflections()
 
@@ -83,12 +83,12 @@ class EventListener(private val bot: DiscordBot) : ListenerAdapter() {
 
         dslCommands.filter {
 
-            val predicates = it.command.preconditions as List<(GuildJoinEvent) -> Boolean>
+            val predicates = it.command.preconditions as List<(GuildMemberJoinEvent) -> Boolean>
 
             predicates
                 .map { predicate -> predicate(event) }
                 .fold(true) {total, next -> total && next}
-        }.map { it.command.job as Job<GuildJoinEvent> }
+        }.map { it.command.job as Job<GuildMemberJoinEvent> }
             .flatMap { it.run }
             .forEach { it(event) }
     }

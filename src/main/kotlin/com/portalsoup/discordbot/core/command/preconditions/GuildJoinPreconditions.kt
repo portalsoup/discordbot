@@ -1,8 +1,6 @@
 package com.portalsoup.discordbot.core.command.preconditions
 
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import net.dv8tion.jda.api.events.message.priv.GenericPrivateMessageEvent
 
 class GuildJoinPreconditions<E : GuildMemberJoinEvent>(val preconditions: MutableList<(E) -> Boolean>) {
     fun isABot(lambda: () -> Boolean) =
