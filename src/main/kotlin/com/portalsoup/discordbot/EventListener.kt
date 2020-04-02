@@ -73,7 +73,7 @@ class EventListener(private val bot: DiscordBot) : ListenerAdapter() {
             .forEach { it(event) }
     }
 
-    override fun onGuildJoin(event: GuildMemberJoinEvent) {
+    override fun onGuildMemberJoin(event: GuildMemberJoinEvent) {
         // dsl commands
         val reflections = Reflections()
 
