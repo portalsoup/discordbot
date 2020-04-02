@@ -7,11 +7,6 @@ import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent
 @CommandDsl
 class GuildMessageCommandBuilder<E : GenericGuildMessageEvent> : AbstractCommandBuilder<E>() {
 
-    internal var job: Job<E> = Job(listOf())
-    internal var preconditions = mutableListOf<(E) -> Boolean>()
-    internal var description = ""
-    internal var name = ""
-
     fun job(lambda: GuildMessageJobBuilder<E>.() -> Unit) {
         job = GuildMessageJobBuilder<E>().apply(lambda).build()
     }
@@ -21,17 +16,6 @@ class GuildMessageCommandBuilder<E : GenericGuildMessageEvent> : AbstractCommand
             GuildMessagePreconditionListBuilder<E>().apply(lambda).build()
         )
     }
-
-    override fun description(lambda: () -> String) {
-        description = lambda()
-    }
-
-    override fun name(lambda: () -> String) {
-        name = lambda()
-    }
-
-    override fun build(): Command<E> =
-        Command(name = name, description = description, job = job, preconditions = preconditions)
 }
 
 @CommandDsl

@@ -17,6 +17,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
     implementation "org.jetbrains.kotlin:kotlin-reflect"
+// https://mvnrepository.com/artifact/org.testng/testng
+    testCompile group: 'org.testng', name: 'testng', version: '7.1.0'
+
 }
 
 compileKotlin {
