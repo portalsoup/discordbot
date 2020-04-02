@@ -34,7 +34,14 @@ class PrivateMessagePreconditionListBuilder<E : GenericPrivateMessageEvent> : Pr
 open class PrivateMessageJobBuilder<E : GenericPrivateMessageEvent> : JobBuilder<E>() {
     fun reply(lambda: () -> String) {
         addRunner { event ->
-            event.channel.sendMessage(lambda()).queue()
+            event.channel
+                .retrieveMessageById(event.messageId)
+                .complete()
+                .author
+                .openPrivateChannel()
+                .queue() {
+                    it.sendMessage(lambda()).queue()
+                }
         }
     }
 }
