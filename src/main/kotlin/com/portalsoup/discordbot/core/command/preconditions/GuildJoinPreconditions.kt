@@ -1,6 +1,7 @@
 package com.portalsoup.discordbot.core.command.preconditions
 
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent
 
 class GuildJoinPreconditions<E : GuildMemberJoinEvent>(val preconditions: MutableList<(E) -> Boolean>) {
     fun isABot(lambda: () -> Boolean) =
@@ -60,6 +61,21 @@ class GuildJoinNamePreconditions<E : GuildMemberJoinEvent>(val preconditions: Mu
                     .effectiveName
                     .trim()
                     .equals(message())
+            } catch (exception: Throwable) {
+                false
+            }
+        }
+
+    fun equalsIgnoreCase(message: () -> String) =
+        preconditions.add { event: GuildMemberJoinEvent ->
+            try {
+                event
+                    .channel
+                    .retrieveMessageById(event.messageId)
+                    .complete()
+                    .contentRaw.trim()
+                    .toLowerCase()
+                    .equals(message().toLowerCase())
             } catch (exception: Throwable) {
                 false
             }

@@ -2,6 +2,7 @@ package com.portalsoup.discordbot.core.command.preconditions
 
 import com.portalsoup.discordbot.core.command.CommandDsl
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent
+import net.dv8tion.jda.api.events.message.priv.GenericPrivateMessageEvent
 
 @CommandDsl
 class GuildMessagePreconditions<E: GenericGuildMessageEvent>(val preconditions: MutableList<(E) -> Boolean>) {
@@ -44,6 +45,21 @@ class GuildMessagePreconditions<E: GenericGuildMessageEvent>(val preconditions: 
                     .complete()
                     .contentRaw.trim()
                     .equals(message())
+            } catch (exception: Throwable) {
+                false
+            }
+        }
+
+    fun equalsIgnoreCase(message: () -> String) =
+        preconditions.add { event: GenericGuildMessageEvent ->
+            try {
+                event
+                    .channel
+                    .retrieveMessageById(event.messageId)
+                    .complete()
+                    .contentRaw.trim()
+                    .toLowerCase()
+                    .equals(message().toLowerCase())
             } catch (exception: Throwable) {
                 false
             }
@@ -93,6 +109,21 @@ class GuildMessageAuthorPreconditions<E: GenericGuildMessageEvent>(val precondit
                     .author
                     .name
                     .equals(message())
+            } catch (exception: Throwable) {
+                false
+            }
+        }
+
+    fun equalsIgnoreCase(message: () -> String) =
+        preconditions.add { event: GenericGuildMessageEvent ->
+            try {
+                event
+                    .channel
+                    .retrieveMessageById(event.messageId)
+                    .complete()
+                    .contentRaw.trim()
+                    .toLowerCase()
+                    .equals(message().toLowerCase())
             } catch (exception: Throwable) {
                 false
             }

@@ -47,6 +47,21 @@ class PrivateMessagePreconditions <E : GenericPrivateMessageEvent>(val precondit
                 false
             }
         }
+
+    fun equalsIgnoreCase(message: () -> String) =
+        preconditions.add { event: GenericPrivateMessageEvent ->
+            try {
+                event
+                    .channel
+                    .retrieveMessageById(event.messageId)
+                    .complete()
+                    .contentRaw.trim()
+                    .toLowerCase()
+                    .equals(message().toLowerCase())
+            } catch (exception: Throwable) {
+                false
+            }
+        }
 }
 
 @CommandDsl
