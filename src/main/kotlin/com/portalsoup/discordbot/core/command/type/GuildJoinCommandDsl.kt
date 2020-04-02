@@ -29,4 +29,12 @@ class GuildJoinJobBuilder<E : GuildMemberJoinEvent> : JobBuilder<E>() {
             channel.sendMessage(lambda()).queue()
         }
     }
+
+    fun sendDM(lambda: () -> String) {
+        addRunner { event ->
+            event.member.user.openPrivateChannel().queue() {
+                it.sendMessage(lambda()).queue()
+            }
+        }
+    }
 }
