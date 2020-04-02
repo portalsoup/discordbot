@@ -2,6 +2,7 @@ package com.portalsoup.discordbot.core.command.type
 
 import com.portalsoup.discordbot.core.command.AbstractCommandBuilder
 import com.portalsoup.discordbot.core.command.JobBuilder
+import com.portalsoup.discordbot.core.command.preconditions.GuildJoinPreconditions
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import java.lang.RuntimeException
 
@@ -15,6 +16,9 @@ class GuildJoinCommandBuilder<E : GuildMemberJoinEvent> : AbstractCommandBuilder
     }
 
     // preconditions
+    fun preconditions(lambda: GuildJoinPreconditions<E>.() -> Unit) {
+            GuildJoinPreconditions<E>(preconditions).apply(lambda)
+    }
 }
 
 class GuildJoinJobBuilder<E : GuildMemberJoinEvent> : JobBuilder<E>() {
